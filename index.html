@@ -10,7 +10,7 @@
 </head>
 
 <body>
-    <div id="container" class="">
+    <div id="container" class="container ">
         <div id="wrapper" class="">
             <div id="head" class="">
                 <h2 class="dark">PhotoSimple</h2>
@@ -57,15 +57,16 @@
                 </div>
 
                 <div id="preview-container">
-                    <img src="https://codingnepalweb.com/demos/image-editor-javascript/image-placeholder.svg" alt="preview-image " />
+                    <img src="https://codingnepalweb.com/demos/image-editor-javascript/image-placeholder.svg" alt="preview-image " id="preview-image" />
                 </div>
             </div>
 
             <div id="functionBtn-container">
                 <button id="reset-btn">RESET FILTERS</button>
                 <div id="upload-save-btn">
+                    <input type="file" id="fileInput" accept="images/*" hidden>
                     <button id="choose-image-btn">CHOOSE IMAGE</button>
-                    <button id="save-image-btn">SAVE IAMGE</button>
+                    <button id="save-image-btn">SAVE IMAGE</button>
                 </div>
             </div>
         </div>

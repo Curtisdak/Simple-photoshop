@@ -5,8 +5,6 @@ moonBtn.style.display = "none";
 
 
 function toggleMode() {
-    console.log("hello")
-
 
     htmlElement.classList.toggle("dark")
     if (htmlElement.classList.contains("dark")) {
@@ -37,3 +35,26 @@ function loadThemes() {
 }
 
 loadThemes()
+
+// now let try to add an image
+
+const fileInput = document.querySelector("#fileInput");
+const chooseImgBtn = document.querySelector("#choose-image-btn");
+const previewImage = document.querySelector("#preview-image");
+
+chooseImgBtn.addEventListener("click", () => fileInput.click());
+fileInput.addEventListener("change", loadImage);
+
+function loadImage() {
+
+    const file = fileInput.files[0];
+
+    if (!file) {
+        return;
+    } else {
+        previewImage.src = URL.createObjectURL(file);
+        previewImage.addEventListener("load", () => document.querySelector(".container").classList.remove("disable"))
+
+    }
+    console.log(file)
+}
