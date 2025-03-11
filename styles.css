@@ -135,11 +135,6 @@ p {
     width: 35%;
 }
 
-#editing-btn {
-    background-color: hsl(var(--secondary));
-    color: hsl(var(--secondary-foreground));
-}
-
 .active {
     border: 5px solid hsl(var(--foreground));
 }
@@ -147,6 +142,8 @@ p {
 #editingOption button {
     width: calc(100% / 2 - 5px);
     margin: 1px;
+    background-color: hsl(var(--primary));
+    color: hsl(var(--secondary-foreground));
 }
 
 #editingOptionRotate {}
