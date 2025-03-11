@@ -64,9 +64,9 @@
          width: 100vw;
          height: 100vh;
          overflow: hidden;
+         background-color: hsl(var(--muted));
      }
      
-     #container,
      #wrapper {
          background-color: hsl(var(--background));
          padding: 10px;
@@ -137,4 +137,11 @@
          accent-color: hsl(var(--primary));
          width: 100%;
          cursor: pointer;
+     }
+     
+     #rotate-flip-btn {}
+     
+     #functionBtn-container {
+         display: flex;
+         justify-content: space-between;
      }
