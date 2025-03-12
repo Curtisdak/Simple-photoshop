@@ -2,12 +2,20 @@ const htmlElement = document.documentElement;
 const sunBtn = document.querySelector(".sun");
 const moonBtn = document.querySelector(".moon");
 moonBtn.style.display = "none";
+const resetFilterBtn = document.querySelector("#reset-btn")
+const saveBtn = document.querySelector("#save-image-btn")
+const toastElement = document.querySelector("#toastElement")
 
+const rotateOptions = document.querySelectorAll("#rotate-flip-container button")
 
 let brightness = 100;
 let saturation = 100;
 let inversion = 0;
 let grayscale = 0;
+let rotate = 0;
+let flipHorizontal = 1;
+let flipVertical = 1;
+
 
 
 function toggleMode() {
@@ -53,7 +61,10 @@ fileInput.addEventListener("change", loadImage);
 
 function loadImage() {
 
+    resetFilterBtn.click()
+
     const file = fileInput.files[0];
+
 
     if (!file) {
         return;
@@ -96,29 +107,20 @@ filtersOption.forEach((option) => {
             filterSlider.value = grayscale;
             filterValue.innerText = `${grayscale}%`
         }
-
-
-        applyChange()
+        applyFilters()
     });
 });
 
-function applyChange() {
-    previewImage.style.filter = ` brightness(${brightness}) saturate(${saturation}) invert(${inversion}) grayscale(${grayscale}) `
+const applyFilters = () => {
+
+    previewImage.style.transition = ` transform .6s ease-in-out, filter .6s ease-in-out `
+    previewImage.style.transform = `rotate(${rotate}deg) scale(${flipHorizontal}, ${flipVertical}) `
+    previewImage.style.filter = `brightness(${brightness}%) saturate(${saturation}%) invert(${inversion}%) grayscale(${grayscale}%) `
 }
 
-
-
-
-
-
-// now I will do the slider
-
-
-
-
-
-
-
+resetFilterBtn.addEventListener("click", resetFilter)
+saveBtn.addEventListener("click", downloadImage)
+    // now I will do the slider
 function updateFilter() {
     console.log(filterSlider.value)
     filterValue.innerText = `${filterSlider.value}%`;
@@ -126,21 +128,103 @@ function updateFilter() {
 
     if (selectedFilter.id === "Brightness") {
         brightness = filterSlider.value;
-        filterSlider.max = "200"
+        // filterSlider.max = "200"
     } else if (selectedFilter.id === "Saturation") {
         saturation = filterSlider.value;
-        filterSlider.max = "200"
+        // filterSlider.max = "200"
     } else if (selectedFilter.id === "Inversion") {
         inversion = filterSlider.value;
-        filterSlider.max = "100"
+        // filterSlider.max = "100"
     } else if (selectedFilter.id === "Grayscale") {
         grayscale = filterSlider.value;
-        filterSlider.max = "100"
+        // filterSlider.max = "100"
     }
-
-
-
-
+    applyFilters()
 }
 
+
+// my function for rotate and flip btn
+
+rotateOptions.forEach((option) => {
+
+    option.addEventListener("click", () => {
+
+        if (option.id === "left") {
+            rotate -= 90;
+        } else if (option.id === "right") { rotate += 90; } else if (option.id === "horizontal") { flipHorizontal = flipHorizontal === 1 ? -1 : 1 } else if (option.id = "vertical") { flipVertical = flipVertical === 1 ? -1 : 1 }
+
+        applyFilters()
+
+    })
+})
+
+
+function resetFilter() {
+    brightness = 100;
+    saturation = 100;
+    inversion = 0;
+    grayscale = 0;
+    rotate = 0;
+    flipHorizontal = 1;
+    flipVertical = 1;
+    filtersOption[0].click();
+    applyFilters()
 }
+
+let isClicked = false;
+
+function downloadImage() {
+
+    if (isClicked) return
+
+    isClicked = true;
+    saveBtn.innerText = "Waiting...";
+    saveBtn.classList.add("disabledBtn")
+    toastElement.style.display = "none"
+    console.log(isClicked)
+
+    setTimeout(() => {
+        console.log("saveBtn")
+
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+
+        canvas.width = previewImage.naturalWidth;
+        canvas.height = previewImage.naturalHeight;
+
+        ctx.translate(canvas.width / 2, canvas.height / 2);
+        if (rotate !== 0) { ctx.rotate(rotate * Math.PI / 180) }
+        ctx.scale(flipHorizontal, flipVertical);
+        ctx.filter = `brightness(${brightness}%) saturate(${saturation}%) invert(${inversion}%) grayscale(${grayscale}%) `
+        ctx.drawImage(previewImage, -canvas.width / 2, -canvas.height / 2, canvas.width, canvas.height);
+
+        const link = document.createElement("a")
+        const file = fileInput.files[0]
+        link.download = `photoSimple-${file.name}`
+        link.href = canvas.toDataURL("image.jpeg")
+        link.click()
+
+        isClicked = false
+        saveBtn.innerText = "Downloaded";
+        saveBtn.classList.add("disabledBtn");
+        const message = document.createElement('p')
+        toastElement.innerHTML = "";
+        message.innerText = "Image has been downloaded"
+        toastElement.appendChild(message)
+        toastElement.style.display = "block"
+        console.log(isClicked)
+
+
+        setTimeout(() => {
+            if (isClicked === false) {
+                saveBtn.innerText = "SAVE IMAGE";
+                saveBtn.classList.remove("disabledBtn")
+                toastElement.style.display = "none"
+
+
+            }
+        }, 3000);
+
+    }, 1000)
+
+};
